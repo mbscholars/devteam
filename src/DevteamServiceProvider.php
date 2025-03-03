@@ -2,9 +2,9 @@
 
 namespace mbscholars\Devteam;
 
+use mbscholars\Devteam\Commands\DevteamCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use mbscholars\Devteam\Commands\DevteamCommand;
 
 class DevteamServiceProvider extends PackageServiceProvider
 {
