@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton;
+namespace mbscholars\Devteam;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use VendorName\Skeleton\Commands\SkeletonCommand;
+use mbscholars\Devteam\Commands\DevteamCommand;
 
-class SkeletonServiceProvider extends PackageServiceProvider
+class DevteamServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
     {
@@ -16,10 +16,10 @@ class SkeletonServiceProvider extends PackageServiceProvider
          * More info: https://github.com/spatie/laravel-package-tools
          */
         $package
-            ->name('skeleton')
+            ->name('devteam')
             ->hasConfigFile()
             ->hasViews()
-            ->hasMigration('create_migration_table_name_table')
-            ->hasCommand(SkeletonCommand::class);
+            ->hasMigration('create_devteam_table')
+            ->hasCommand(DevteamCommand::class);
     }
 }
