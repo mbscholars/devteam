@@ -13,16 +13,16 @@ it('can generate frontend task prompt', function () {
             'choices' => [
                 [
                     'message' => [
-                        'content' => '["What specific Vue components will this feature interact with?", "Are there any specific browser constraints?"]'
-                    ]
-                ]
-            ]
-        ], 200)
+                        'content' => '["What specific Vue components will this feature interact with?", "Are there any specific browser constraints?"]',
+                    ],
+                ],
+            ],
+        ], 200),
     ]);
 
     // Execute the command
-    $taskName = 'TestFrontendTask' . Str::random(5);
-    
+    $taskName = 'TestFrontendTask'.Str::random(5);
+
     $this->artisan('devteam', ['name' => $taskName])
         ->expectsChoice('Which department is this task for?', 'frontend', ['frontend', 'backend', 'database'])
         ->expectsChoice('What is the skill level for implementing this task?', 'mid-level', ['junior', 'mid-level', 'senior', 'expert'])
@@ -56,16 +56,16 @@ it('can generate frontend task prompt', function () {
     // Check if file exists
     $filePath = base_path("features/$taskName/prompt.md");
     expect(File::exists($filePath))->toBeTrue();
-    
+
     // Check content
     $content = File::get($filePath);
-    expect($content)->toContain('Frontend Task: ' . $taskName);
+    expect($content)->toContain('Frontend Task: '.$taskName);
     expect($content)->toContain('Implementation Skill Level: mid-level');
     expect($content)->toContain('Business Goal: Test business goal');
     expect($content)->toContain('Vue 3 component library');
     expect($content)->toContain('JWT auth');
     expect($content)->toContain('TestComponent');
-    
+
     // Clean up
     if (File::exists($filePath)) {
         File::deleteDirectory(dirname($filePath));
@@ -79,16 +79,16 @@ it('can generate backend task prompt', function () {
             'choices' => [
                 [
                     'message' => [
-                        'content' => '["What Laravel version is being used?", "Are there any specific coding standards to follow?"]'
-                    ]
-                ]
-            ]
-        ], 200)
+                        'content' => '["What Laravel version is being used?", "Are there any specific coding standards to follow?"]',
+                    ],
+                ],
+            ],
+        ], 200),
     ]);
 
     // Execute the command
-    $taskName = 'TestBackendTask' . Str::random(5);
-    
+    $taskName = 'TestBackendTask'.Str::random(5);
+
     $this->artisan('devteam', ['name' => $taskName])
         ->expectsChoice('Which department is this task for?', 'backend', ['frontend', 'backend', 'database'])
         ->expectsChoice('What is the skill level for implementing this task?', 'senior', ['junior', 'mid-level', 'senior', 'expert'])
@@ -124,15 +124,15 @@ it('can generate backend task prompt', function () {
     // Check if file exists
     $filePath = base_path("features/$taskName/prompt.md");
     expect(File::exists($filePath))->toBeTrue();
-    
+
     // Check content
     $content = File::get($filePath);
-    expect($content)->toContain('Backend Task: ' . $taskName);
+    expect($content)->toContain('Backend Task: '.$taskName);
     expect($content)->toContain('Skill Level: senior');
     expect($content)->toContain('Business Goal: Test business goal');
     expect($content)->toContain('Laravel 12');
     expect($content)->toContain('PSR-12');
-    
+
     // Clean up
     if (File::exists($filePath)) {
         File::deleteDirectory(dirname($filePath));
@@ -146,16 +146,16 @@ it('can generate database task prompt', function () {
             'choices' => [
                 [
                     'message' => [
-                        'content' => '["What database engine is being used?", "Are there any specific naming conventions for database objects?"]'
-                    ]
-                ]
-            ]
-        ], 200)
+                        'content' => '["What database engine is being used?", "Are there any specific naming conventions for database objects?"]',
+                    ],
+                ],
+            ],
+        ], 200),
     ]);
 
     // Execute the command
-    $taskName = 'TestDatabaseTask' . Str::random(5);
-    
+    $taskName = 'TestDatabaseTask'.Str::random(5);
+
     $this->artisan('devteam', ['name' => $taskName])
         ->expectsChoice('Which department is this task for?', 'database', ['frontend', 'backend', 'database'])
         ->expectsChoice('What is the skill level for implementing this task?', 'expert', ['junior', 'mid-level', 'senior', 'expert'])
@@ -192,15 +192,15 @@ it('can generate database task prompt', function () {
     // Check if file exists
     $filePath = base_path("features/$taskName/prompt.md");
     expect(File::exists($filePath))->toBeTrue();
-    
+
     // Check content
     $content = File::get($filePath);
-    expect($content)->toContain('Database Design Task: ' . $taskName);
+    expect($content)->toContain('Database Design Task: '.$taskName);
     expect($content)->toContain('Skill Level: expert');
     expect($content)->toContain('Business Goal: Improve performance');
     expect($content)->toContain('MySQL 8.0');
     expect($content)->toContain('Snake case');
-    
+
     // Clean up
     if (File::exists($filePath)) {
         File::deleteDirectory(dirname($filePath));
@@ -210,12 +210,12 @@ it('can generate database task prompt', function () {
 it('handles API errors gracefully when generating follow-up questions', function () {
     // Mock the HTTP response to fail
     Http::fake([
-        'https://api.openai.com/v1/chat/completions' => Http::response('', 500)
+        'https://api.openai.com/v1/chat/completions' => Http::response('', 500),
     ]);
 
     // Execute the command
-    $taskName = 'TestErrorTask' . Str::random(5);
-    
+    $taskName = 'TestErrorTask'.Str::random(5);
+
     $this->artisan('devteam', ['name' => $taskName])
         ->expectsChoice('Which department is this task for?', 'frontend', ['frontend', 'backend', 'database'])
         ->expectsChoice('What is the skill level for implementing this task?', 'junior', ['junior', 'mid-level', 'senior', 'expert'])
@@ -231,9 +231,9 @@ it('handles API errors gracefully when generating follow-up questions', function
     // Check if file exists despite API error
     $filePath = base_path("features/$taskName/prompt.md");
     expect(File::exists($filePath))->toBeTrue();
-    
+
     // Clean up
     if (File::exists($filePath)) {
         File::deleteDirectory(dirname($filePath));
     }
-}); 
+});
