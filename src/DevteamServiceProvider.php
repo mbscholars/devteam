@@ -5,6 +5,9 @@ namespace mbscholars\Devteam;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use mbscholars\Devteam\Commands\DevteamCommand;
+use mbscholars\Devteam\Commands\LaravelAppSummary;
+use mbscholars\Devteam\Commands\LaravelFrontEndSummary;
+use mbscholars\Devteam\Commands\DumpDatabaseSchema;
 
 class DevteamServiceProvider extends PackageServiceProvider
 {
@@ -20,6 +23,11 @@ class DevteamServiceProvider extends PackageServiceProvider
             ->hasConfigFile()
             ->hasViews()
             ->hasMigration('create_devteam_table')
-            ->hasCommand(DevteamCommand::class);
+            ->hasCommands([
+                DevteamCommand::class,
+                LaravelAppSummary::class,
+                LaravelFrontEndSummary::class,
+                DumpDatabaseSchema::class,
+            ]);
     }
 }
