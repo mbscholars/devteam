@@ -2,9 +2,9 @@
 
 namespace mbscholars\Devteam;
 
-use Spatie\LaravelPackageTools\Package;
-use Spatie\LaravelPackageTools\PackageServiceProvider;
 use mbscholars\Devteam\Commands\DevteamCommand;
+use Spatie\LaravelPackageTools\Package;
+use Spatie\LaravelPackageTools\PackageServiceProvider; 
 use mbscholars\Devteam\Commands\LaravelAppSummary;
 use mbscholars\Devteam\Commands\LaravelFrontEndSummary;
 use mbscholars\Devteam\Commands\DumpDatabaseSchema;
