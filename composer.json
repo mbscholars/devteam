@@ -1,12 +1,8 @@
 {
     "name": "mbscholars/devteam",
-    "description": "This package helps you develop prompt that works best for your laravel project",
-    "keywords": [
-        "Sunday Mba",
-        "laravel",
-        "devteam"
-    ],
-    "homepage": "https://github.com/mbscholars/devteam",
+    "description": "AI-Powered Laravel Development Assistant",
+    "keywords": ["laravel", "ai", "development", "assistant"],
+    "type": "library",
     "license": "MIT",
     "authors": [
         {
@@ -16,9 +12,8 @@
         }
     ],
     "require": {
-        "php": "^8.4",
-        "illuminate/contracts": "^10.0||^11.0||^12.0",
-        "spatie/laravel-package-tools": "^1.16"
+        "php": "^8.1",
+        "illuminate/support": "^9.0|^10.0|^12.0"
     },
     "require-dev": {
         "laravel/pint": "^1.14",
@@ -36,8 +31,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "mbscholars\\Devteam\\Tests\\": "tests/",
-            "Workbench\\App\\": "workbench/app/"
+            "mbscholars\\Devteam\\Tests\\": "tests/"
         }
     },
     "scripts": {
