@@ -5,7 +5,6 @@ namespace mbscholars\Devteam\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
 
 class DevteamCommand extends Command
 {
@@ -28,10 +27,10 @@ class DevteamCommand extends Command
         // Run all devteam imports
         $this->info('Generating updated backend summary');
         $this->call('devteam:backend-summary');
-        
+
         $this->info('Generating updated frontend summary');
         $this->call('devteam:frontend-summary');
-        
+
         $this->info('Generating updated database schema');
         $this->call('devteam:db');
 
@@ -67,7 +66,7 @@ class DevteamCommand extends Command
                 'Part of the main conversion funnel');
             $painPoints = $this->ask('   What key pain points should be addressed in the design?',
                 'Simplify complex interactions and improve clarity');
-            
+
             // New question about frontend blueprint
             $frontendBlueprint = $this->ask('Is frontend blueprint available? (path to file)',
                 'devteam/contexts/frontend-summary.json');
@@ -77,11 +76,11 @@ class DevteamCommand extends Command
             $this->line('<fg=blue;options=bold>2. UI/UX & DESIGN</>');
             $components = $this->ask('   What are the specific UI components or pages that need to be created or modified?',
                 'Main dashboard page and navigation components');
-            
+
             // New question about components folder
             $componentsFolder = $this->ask('Where should the components be stored?',
                 'resources/js/components');
-                
+
             $designSystem = $this->ask('   Are there existing design systems or component libraries to follow?',
                 'Yes, follow our internal Vue component library');
             $branding = $this->ask('   What are the primary colors, typography, and branding guidelines?',
@@ -208,7 +207,7 @@ PROMPT;
                 'Internal admin users and customer-facing applications');
             $compatibility = $this->ask('   Does this impact any existing workflows or require backward compatibility?',
                 'Yes, must maintain compatibility with existing API consumers');
-                
+
             // New questions about application architecture and blueprints
             $appBlueprint = $this->ask('   Is application blueprint available? (path to file)',
                 'devteam/contexts/app-summary.json');
@@ -359,7 +358,7 @@ PROMPT;
                 'Backend services and reporting systems');
             $compatibility = $this->ask('   Does this impact any existing database schemas or require backward compatibility?',
                 'Yes, must maintain compatibility with existing data structures');
-                
+
             // New question about database blueprint
             $dbBlueprint = $this->ask('   Is database blueprint available? (path to file)',
                 'devteam/contexts/db.json');

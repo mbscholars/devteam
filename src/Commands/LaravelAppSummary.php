@@ -49,9 +49,7 @@ class LaravelAppSummary extends Command
         $this->scanAppDirectory();
         $this->scanRoutes();
 
-       
-
-        $outputPath = $this->option('output') ?? 'backend-summary.json' ;
+        $outputPath = $this->option('output') ?? 'backend-summary.json';
         $outputPath = 'devteam/contexts/'.$outputPath;
         // Ensure directory exists
         $directory = dirname($outputPath);

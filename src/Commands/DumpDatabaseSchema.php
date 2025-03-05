@@ -58,6 +58,6 @@ class DumpDatabaseSchema extends Command
         }
 
         file_put_contents('devteam/contexts/'.$filePath, $output);
-        $this->info("Database schema dumped successfully to: devteam/".$filePath);
+        $this->info('Database schema dumped successfully to: devteam/'.$filePath);
     }
 }
