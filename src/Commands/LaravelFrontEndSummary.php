@@ -8,7 +8,7 @@ use Symfony\Component\Finder\Finder;
 
 class LaravelFrontEndSummary extends Command
 {
-    protected $signature = 'app:frontend-summary {--output=frontend-summary.json : Path to output file}';
+    protected $signature = 'devteam:frontend-summary {--output=frontend-summary.json : Path to output file}';
 
     protected $description = 'Provides a technical summary of Vue components, JS utilities, and front-end assets';
 
@@ -32,6 +32,13 @@ class LaravelFrontEndSummary extends Command
         $this->scanViteConfig();
 
         $outputPath = $this->option('output');
+        $outputPath = 'devteam/contexts/'.$outputPath;
+        // Ensure directory exists
+        $directory = dirname($outputPath);
+        if (! File::isDirectory($directory)) {
+            File::makeDirectory($directory, 0755, true);
+        }
+
         File::put($outputPath, json_encode($this->summary, JSON_PRETTY_PRINT));
 
         $this->info("Frontend summary generated successfully at {$outputPath}");

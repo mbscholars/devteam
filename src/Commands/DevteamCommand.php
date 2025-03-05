@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 
 class DevteamCommand extends Command
 {
-    protected $signature = 'devteam {name?}';
+    protected $signature = 'devteam:feature {name?}';
 
     protected $description = 'Generate a structured prompt and store it in a file';
 
@@ -25,6 +25,16 @@ class DevteamCommand extends Command
 
     public function handle(): int
     {
+        // Run all devteam imports
+        $this->info('Generating updated backend summary');
+        $this->call('devteam:backend-summary');
+        
+        $this->info('Generating updated frontend summary');
+        $this->call('devteam:frontend-summary');
+        
+        $this->info('Generating updated database schema');
+        $this->call('devteam:db');
+
         $this->line('');
         $this->info('🚀 <fg=yellow;options=bold>DEVTEAM PROMPT GENERATOR</> 🚀');
         $this->line('');
@@ -57,12 +67,21 @@ class DevteamCommand extends Command
                 'Part of the main conversion funnel');
             $painPoints = $this->ask('   What key pain points should be addressed in the design?',
                 'Simplify complex interactions and improve clarity');
+            
+            // New question about frontend blueprint
+            $frontendBlueprint = $this->ask('Is frontend blueprint available? (path to file)',
+                'devteam/contexts/frontend-summary.json');
 
             // Section 2: UI/UX & Design
             $this->line('');
             $this->line('<fg=blue;options=bold>2. UI/UX & DESIGN</>');
             $components = $this->ask('   What are the specific UI components or pages that need to be created or modified?',
                 'Main dashboard page and navigation components');
+            
+            // New question about components folder
+            $componentsFolder = $this->ask('Where should the components be stored?',
+                'resources/js/components');
+                
             $designSystem = $this->ask('   Are there existing design systems or component libraries to follow?',
                 'Yes, follow our internal Vue component library');
             $branding = $this->ask('   What are the primary colors, typography, and branding guidelines?',
@@ -112,11 +131,28 @@ class DevteamCommand extends Command
             $storage = $this->ask('   Should the frontend store/cache any data locally?',
                 'Cache user preferences in LocalStorage');
 
+            // New question about testing
+            $this->line('');
+            $this->line('<fg=blue;options=bold>6. TESTING REQUIREMENTS</>');
+            $shouldTest = $this->choice('   Should tests be written for this feature?', ['yes', 'no'], 0);
+            $testTypes = '';
+            if ($shouldTest === 'yes') {
+                $testTypes = $this->ask('What types of tests should be included?',
+                    'Unit tests for components and integration tests for user flows');
+            }
+
+            // New question about stopping for confirmation
+            $stopAndConfirm = $this->choice('   Should implementation stop and confirm after each file?', ['yes', 'no'], 1);
+
             $promptContent = <<<PROMPT
 # Frontend Task: $name
 
 ## Implementation Style
 - **Implementation Skill Level:** $skillLevel
+- **Frontend Blueprint:** $frontendBlueprint
+- **Components Location:** $componentsFolder
+- **Stop and Confirm After Each File:** $stopAndConfirm
+- ** Judiciously Use front end components as necessary as found in frontend blueprint
 
 ## 1. General Context & Business Objective
 - **Business Goal:** $businessGoal
@@ -150,7 +186,14 @@ class DevteamCommand extends Command
 - **Validation Approach:** $validation
 - **Local Storage:** $storage
 
+## 6. Testing Requirements
+- **Should Tests Be Written:** $shouldTest
+
 PROMPT;
+
+            if ($shouldTest === 'yes') {
+                $promptContent .= "\n- **Test Types:** $testTypes";
+            }
 
         } elseif ($department === 'backend') {
             $this->line('');
@@ -165,6 +208,12 @@ PROMPT;
                 'Internal admin users and customer-facing applications');
             $compatibility = $this->ask('   Does this impact any existing workflows or require backward compatibility?',
                 'Yes, must maintain compatibility with existing API consumers');
+                
+            // New questions about application architecture and blueprints
+            $appBlueprint = $this->ask('   Is application blueprint available? (path to file)',
+                'devteam/contexts/app-summary.json');
+            $architecture = $this->ask('   What application architecture should be followed?',
+                'As per application blueprint');
 
             // Section 2: API & Services
             $this->line('');
@@ -232,11 +281,28 @@ PROMPT;
             $featureFlags = $this->ask('   Should feature flags or blue-green deployments be used?',
                 'Implement feature flags for gradual rollout');
 
+            // New question about testing
+            $this->line('');
+            $this->line('<fg=blue;options=bold>8. TESTING REQUIREMENTS</>');
+            $shouldTest = $this->choice('   Should tests be written for this feature?', ['yes', 'no'], 0);
+            $testTypes = '';
+            if ($shouldTest === 'yes') {
+                $testTypes = $this->ask('   What types of tests should be included?',
+                    'Unit tests, feature tests, and integration tests');
+            }
+
+            // New question about stopping for confirmation
+            $stopAndConfirm = $this->choice('   Should implementation stop and confirm after each file?', ['yes', 'no'], 1);
+
             $promptContent = <<<PROMPT
 # Backend Task: $name
 
 ## Developer Skill Level
 - **Skill Level:** $skillLevel
+- **Application Blueprint:** $appBlueprint
+- **Application Architecture:** $architecture
+- **Stop and Confirm from developer After Each File:** $stopAndConfirm
+
 
 ## 1. Business Objective & Context
 - **Business Goal:** $businessGoal
@@ -276,6 +342,9 @@ PROMPT;
 - **CI/CD Requirements:** $cicd
 - **Feature Flags/Deployment:** $featureFlags
 
+## 8. Testing Requirements
+- **Should Tests Be Written:** $shouldTest
+
 PROMPT;
         } else { // database
             $this->line('');
@@ -290,6 +359,10 @@ PROMPT;
                 'Backend services and reporting systems');
             $compatibility = $this->ask('   Does this impact any existing database schemas or require backward compatibility?',
                 'Yes, must maintain compatibility with existing data structures');
+                
+            // New question about database blueprint
+            $dbBlueprint = $this->ask('   Is database blueprint available? (path to file)',
+                'devteam/contexts/db.json');
 
             // Section 2: Schema Design
             $this->line('');
@@ -363,6 +436,7 @@ PROMPT;
 
 ## Database Administrator Skill Level
 - **Skill Level:** $skillLevel
+- **Database Blueprint:** $dbBlueprint
 
 ## 1. Business Objective & Context
 - **Business Goal:** $businessGoal
@@ -442,8 +516,8 @@ PROMPT;
         }
 
         // Create directory structure based on studly case name
-        $studlyName = Str::studly($name);
-        $directoryPath = base_path("features/$studlyName");
+        $studlyName = strtolower(str_replace(' ', '-', $name));
+        $directoryPath = base_path("devteam/features/$studlyName");
         $filePath = "$directoryPath/prompt.md";
 
         File::ensureDirectoryExists($directoryPath);
@@ -466,7 +540,7 @@ PROMPT;
                 'Authorization' => 'Bearer '.$this->apiKey,
                 'Content-Type' => 'application/json',
             ])->post($this->apiEndpoint, [
-                'model' => 'gpt-4',
+                'model' => 'gpt-4o-mini',
                 'messages' => [
                     ['role' => 'system', 'content' => $systemPrompt],
                     ['role' => 'user', 'content' => $initialPrompt],

@@ -9,7 +9,7 @@ use Symfony\Component\Finder\Finder;
 
 class LaravelAppSummary extends Command
 {
-    protected $signature = 'app:summary {--output= : Path to output file}';
+    protected $signature = 'devteam:backend-summary {--output= : Path to output file}';
 
     protected $description = 'Provides a technical summary of the controllers, models, packages used in the app';
 
@@ -49,12 +49,10 @@ class LaravelAppSummary extends Command
         $this->scanAppDirectory();
         $this->scanRoutes();
 
-        if (config('devteam.ai_context.include_db_schema', true)) {
-            $this->scanDatabaseSchema();
-        }
+       
 
-        $outputPath = $this->option('output') ?? config('devteam.summary.backend_output_path', 'app/context/summary.json');
-
+        $outputPath = $this->option('output') ?? 'backend-summary.json' ;
+        $outputPath = 'devteam/contexts/'.$outputPath;
         // Ensure directory exists
         $directory = dirname($outputPath);
         if (! File::isDirectory($directory)) {

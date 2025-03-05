@@ -7,13 +7,13 @@ use Illuminate\Support\Facades\DB;
 
 class DumpDatabaseSchema extends Command
 {
-    protected $signature = 'schema:dump {file}'; // Pass the output file path
+    protected $signature = 'schema:dump {file?}'; // Make file parameter optional
 
     protected $description = 'Dumps the Laravel database schema to a text file';
 
     public function handle()
     {
-        $filePath = $this->argument('file');
+        $filePath = $this->argument('file') ?? 'db.txt'; // Use default if not provided
 
         $tables = DB::select('SHOW TABLES');
         $databaseName = config('database.connections.mysql.database');
@@ -57,7 +57,7 @@ class DumpDatabaseSchema extends Command
             $output .= "\n\n";
         }
 
-        file_put_contents($filePath, $output);
-        $this->info("Database schema dumped successfully to: $filePath");
+        file_put_contents('devteam/contexts/'.$filePath, $output);
+        $this->info("Database schema dumped successfully to: devteam/".$filePath);
     }
 }
